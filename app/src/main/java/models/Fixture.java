@@ -11,14 +11,22 @@ import java.sql.Time;
 
 public class Fixture implements Parcelable{
 
+    String FixtureId;
     String Date;
     String Status;
     String HomeTeam;
     String AwayTeam;
-   // String TimeStart;
     String HomeGoals;
     String AwayGoals;
     String Competition;
+
+    public String getFixtureId() {
+        return FixtureId;
+    }
+
+    public void setFixtureId(String fixtureId) {
+        FixtureId = fixtureId;
+    }
 
     public String getDate() {
         return Date;
@@ -52,14 +60,6 @@ public class Fixture implements Parcelable{
         AwayTeam = awayTeam;
     }
 
-//    public String getTimeStart() {
-//        return TimeStart;
-//    }
-//
-//    public void setTimeStart(String timeStart) {
-//        TimeStart = timeStart;
-//    }
-
     public String getHomeGoals() {
         return HomeGoals;
     }
@@ -91,31 +91,31 @@ public class Fixture implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel out, int i) {
+        out.writeString(FixtureId);
         out.writeString(Date);
         out.writeString(Status);
         out.writeString(HomeTeam);
         out.writeString(AwayTeam);
-      //  out.writeString(TimeStart);
         out.writeString(HomeGoals);
         out.writeString(AwayGoals);
         out.writeString(Competition);
     }
-    public Fixture(String date, String status, String homeTeam, String awayTeam, String homeGoals, String awayGoals, String competition){
+    public Fixture(String fixtureId, String date, String status, String homeTeam, String awayTeam, String homeGoals, String awayGoals, String competition){
+        FixtureId = fixtureId;
         Date = date;
         Status = status;
         HomeTeam = homeTeam;
         AwayTeam = awayTeam;
-        //TimeStart = timeStart;
         HomeGoals = homeGoals;
         AwayGoals = awayGoals;
         Competition = competition;
     }
     private Fixture(Parcel in){
+        FixtureId = in.readString();
         Date = in.readString();
         Status = in.readString();
         HomeTeam = in.readString();
         AwayTeam = in.readString();
-       // TimeStart = in.readString();
         HomeGoals = in.readString();
         AwayGoals = in.readString();
         Competition = in.readString();

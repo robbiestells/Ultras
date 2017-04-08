@@ -1,7 +1,10 @@
 package com.perspective.prime.utras;
 
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -14,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +34,20 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 import adapters.FixtureAdapter;
+import data.UltraContract;
+import data.UltraContract.FixtureEntry;
+import data.UltraDbHelper;
 import models.Fixture;
+
+import static android.R.attr.format;
 
 /**
  * Created by rob on 4/7/17.
@@ -44,6 +58,10 @@ public class ScoresFragment extends Fragment {
     ListView fixtureList;
     ArrayAdapter<Fixture> fixtureAdapter;
     View rv;
+    Button NextButton;
+    Button PreviousButton;
+    int FilterNumber = 1;
+    String FilterLetter = "n";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,12 +71,50 @@ public class ScoresFragment extends Fragment {
 
         fixtureList = (ListView) rv.findViewById(R.id.fixtureList);
 
-        getData();
+        PreviousButton = (Button) rv.findViewById(R.id.PreviousButton);
+        NextButton = (Button) rv.findViewById(R.id.NextButton);
+
+        getData("n1");
+
+        PreviousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (FilterLetter == "n"){
+                    if (FilterNumber == 1){
+                        FilterLetter = "p";
+                        FilterNumber = 1;
+                    } else {
+                        FilterNumber = FilterNumber - 1;
+                    }
+                } else {
+                    FilterNumber = FilterNumber + 1;
+                }
+                getData(FilterLetter + FilterNumber);
+            }
+        });
+
+        NextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (FilterLetter == "p"){
+                    if (FilterNumber == 1){
+                        FilterLetter = "n";
+                        FilterNumber = 1;
+                    } else{
+                        FilterNumber = FilterNumber - 1;
+                    }
+                } else {
+                    FilterNumber = FilterNumber + 1;
+                }
+                getData(FilterLetter + FilterNumber);
+            }
+        });
 
         return rv;
     }
 
-    private void getData() {
+
+    private void getData(String filter) {
         new GetFixtures(getActivity()).execute();
     }
 
@@ -80,6 +136,8 @@ public class ScoresFragment extends Fragment {
             Toast toast = Toast.makeText(getContext(), "Getting Fixtures", Toast.LENGTH_SHORT);
             toast.show();
 
+            fixtures.clear();
+
         }
 
         @Override
@@ -89,13 +147,15 @@ public class ScoresFragment extends Fragment {
             Toast toast = Toast.makeText(getContext(), "Fixtures updated", Toast.LENGTH_SHORT);
             toast.show();
 
-            fixtureList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), fixtures));
+            saveFixtures(fixtures);
+
+          //  fixtureList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), fixtures));
         }
 
         @Override
         protected ArrayList<Fixture> doInBackground(Void... params) {
 
-            String feed = "http://api.football-data.org/v1/fixtures?timeFrame=n1";
+            String feed = "http://api.football-data.org/v1/fixtures?timeFrame=" + FilterLetter + FilterNumber;
             URL url = createUrl(feed);
             String jsonResponse;
             try {
@@ -131,6 +191,7 @@ public class ScoresFragment extends Fragment {
                     String awayTeam = currentFixture.getString("awayTeamName");
 
                     //get other info
+                    String fixtureId = "";
                     String homeGoals = "";
                     String awayGoals = "";
                     String competition = "";
@@ -145,8 +206,25 @@ public class ScoresFragment extends Fragment {
                     JSONObject competitionArray = linkArray.getJSONObject("competition");
                     competition = competitionArray.getString("href");
 
+                    JSONObject selfArray = linkArray.getJSONObject("self");
+                    fixtureId = selfArray.getString("href");
+
+                    Date DateTime = new Date();
+
+                    SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                    sourceFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    try {
+                        DateTime = sourceFormat.parse(date);
+                    }  catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    destFormat.setTimeZone(TimeZone.getDefault());
+
+                    String localDate = destFormat.format(DateTime);
                     // Create a new Fixture object
-                    Fixture fixture = new Fixture(date, status, homeTeam, awayTeam, homeGoals, awayGoals, competition);
+                    Fixture fixture = new Fixture(fixtureId, localDate, status, homeTeam, awayTeam, homeGoals, awayGoals, competition);
 
                     //add feed item to list
                     fixtures.add(fixture);
@@ -221,37 +299,38 @@ public class ScoresFragment extends Fragment {
             return url;
         }
 
-//        private void saveFeedItems(ArrayList<FeedItem> feedItems){
-//            FeedDbHelper mDbHelper = new FeedDbHelper(context);
-//            SQLiteDatabase db = mDbHelper.getWritableDatabase();
-//
-//            String query = "SELECT * FROM " + FeedContract.FeedEntry.TABLE_NAME + " WHERE " + FeedContract.FeedEntry.COLUMN_EPIOSDE_AUDIO
-//                    + " =?";
-//
-//            for (FeedItem item:feedItems) {
-//
-//                Cursor cursor = db.rawQuery(query, new String[] {item.getAudioUrl()}) ;
-//
-//                if (cursor.getCount() <= 0){
-//                    //get values
-//                    ContentValues values = new ContentValues();
-//                    values.put(FeedContract.FeedEntry.COLUMN_SHOW_NAME, item.getShow());
-//                    values.put(FeedContract.FeedEntry.COLUMN_EPISODE_TITLE, item.getTitle());
-//                    values.put(FeedContract.FeedEntry.COLUMN_EPIOSDE_LINK, item.getLink());
-//                    values.put(FeedContract.FeedEntry.COLUMN_EPISODE_DESCRIPTION, item.getDescription());
-//                    values.put(FeedContract.FeedEntry.COLUMN_EPISODE_DATE, item.getPubDate());
-//                    values.put(FeedContract.FeedEntry.COLUMN_EPIOSDE_LENGTH, item.getLength());
-//                    values.put(FeedContract.FeedEntry.COLUMN_EPIOSDE_AUDIO, item.getAudioUrl());
-//
-//                    //insert a new entry with the data above
-//                    long newRowId = db.insert(FeedContract.FeedEntry.TABLE_NAME, null, values);
-//                    Log.v("Insert Feed item", "New row ID: " + newRowId);
-//                }
-//                cursor.close();
-//            }
-//
-//            db.close();
-//        }
+        private void saveFixtures(ArrayList<Fixture> fixtures){
+            UltraDbHelper mDbHelper = new UltraDbHelper(context);
+            SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+            String query = "SELECT * FROM " + FixtureEntry.TABLE_NAME + " WHERE " + FixtureEntry.COLUMN_FIXTURE_ID
+                    + " =?";
+
+            for (Fixture item:fixtures) {
+
+                Cursor cursor = db.rawQuery(query, new String[] {item.getFixtureId()}) ;
+
+                if (cursor.getCount() <= 0){
+                    //get values
+                    ContentValues values = new ContentValues();
+                    values.put(FixtureEntry.COLUMN_FIXTURE_ID, item.getFixtureId());
+                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS, item.getAwayGoals());
+                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM, item.getAwayTeam());
+                    values.put(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS, item.getHomeGoals());
+                    values.put(FixtureEntry.COLUMN_FIXTURE_COMPETITION, item.getCompetition());
+                    values.put(FixtureEntry.COLUMN_FIXTURE_DATE, item.getDate());
+                    values.put(FixtureEntry.COLUMN_FIXTURE_HOME_TEAM, item.getHomeTeam());
+                    values.put(FixtureEntry.COLUMN_FIXTURE_STATUS, item.getStatus());
+
+                    //insert a new entry with the data above
+                    long newRowId = db.insert(FixtureEntry.TABLE_NAME, null, values);
+                    Log.v("Insert Fixture item", "New row ID: " + newRowId);
+                }
+                cursor.close();
+            }
+
+            db.close();
+        }
     }
 
 }
