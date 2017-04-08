@@ -79,8 +79,8 @@ public class ScoresFragment extends Fragment {
         PreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (FilterLetter == "n"){
-                    if (FilterNumber == 1){
+                if (FilterLetter == "n") {
+                    if (FilterNumber == 1) {
                         FilterLetter = "p";
                         FilterNumber = 1;
                     } else {
@@ -96,11 +96,11 @@ public class ScoresFragment extends Fragment {
         NextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (FilterLetter == "p"){
-                    if (FilterNumber == 1){
+                if (FilterLetter == "p") {
+                    if (FilterNumber == 1) {
                         FilterLetter = "n";
                         FilterNumber = 1;
-                    } else{
+                    } else {
                         FilterNumber = FilterNumber - 1;
                     }
                 } else {
@@ -149,7 +149,7 @@ public class ScoresFragment extends Fragment {
 
             saveFixtures(fixtures);
 
-          //  fixtureList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), fixtures));
+            fixtureList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), fixtures));
         }
 
         @Override
@@ -215,14 +215,22 @@ public class ScoresFragment extends Fragment {
                     sourceFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                     try {
                         DateTime = sourceFormat.parse(date);
-                    }  catch (ParseException e) {
+                    } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
                     SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     destFormat.setTimeZone(TimeZone.getDefault());
-
                     String localDate = destFormat.format(DateTime);
+
+                    String[] compSplit = competition.split("/");
+                    int compInt = compSplit.length;
+                    competition = compSplit[compInt-1];
+
+                    String[] fixtureSplit = fixtureId.split("/");
+                    int fixtureInt = fixtureSplit.length;
+                    fixtureId = fixtureSplit[fixtureInt-1];
+
                     // Create a new Fixture object
                     Fixture fixture = new Fixture(fixtureId, localDate, status, homeTeam, awayTeam, homeGoals, awayGoals, competition);
 
@@ -299,18 +307,18 @@ public class ScoresFragment extends Fragment {
             return url;
         }
 
-        private void saveFixtures(ArrayList<Fixture> fixtures){
+        private void saveFixtures(ArrayList<Fixture> fixtures) {
             UltraDbHelper mDbHelper = new UltraDbHelper(context);
             SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
             String query = "SELECT * FROM " + FixtureEntry.TABLE_NAME + " WHERE " + FixtureEntry.COLUMN_FIXTURE_ID
                     + " =?";
 
-            for (Fixture item:fixtures) {
+            for (Fixture item : fixtures) {
 
-                Cursor cursor = db.rawQuery(query, new String[] {item.getFixtureId()}) ;
+                Cursor cursor = db.rawQuery(query, new String[]{item.getFixtureId()});
 
-                if (cursor.getCount() <= 0){
+                if (cursor.getCount() <= 0) {
                     //get values
                     ContentValues values = new ContentValues();
                     values.put(FixtureEntry.COLUMN_FIXTURE_ID, item.getFixtureId());

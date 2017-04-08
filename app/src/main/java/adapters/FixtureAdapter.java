@@ -15,18 +15,24 @@ import android.widget.TextView;
 
 import com.perspective.prime.utras.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import models.Fixture;
+
+import static com.perspective.prime.utras.R.id.status;
 
 /**
  * Created by rob on 4/7/17.
  */
 
-public class FixtureAdapter extends ArrayAdapter<Fixture>{
-    public FixtureAdapter(Context context, ArrayList<Fixture> fixtures){
+public class FixtureAdapter extends ArrayAdapter<Fixture> {
+    public FixtureAdapter(Context context, ArrayList<Fixture> fixtures) {
         super(context, 0, fixtures);
     }
+
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -41,6 +47,34 @@ public class FixtureAdapter extends ArrayAdapter<Fixture>{
         // Get the host and load the name and image
         Fixture currentFixture = getItem(position);
 
+        String status = currentFixture.getStatus();
+        String homeGoals = "0";
+        String awayGoals = "0";
+
+        if (status.contains("FINISHED")) {
+            status = "FT";
+            homeGoals = currentFixture.getHomeGoals();
+            awayGoals = currentFixture.getAwayGoals();
+        } else if (status.contains("TIMED")) {
+            String date = currentFixture.getDate();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:MM");
+            Date testDate = null;
+            try {
+                testDate = sdf.parse(date);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+            status = formatter.format(testDate);
+        } else if(status.contains("PLAY")){
+            status = "";
+            homeGoals = currentFixture.getHomeGoals();
+            awayGoals = currentFixture.getAwayGoals();
+        }
+
+        TextView Status = (TextView) listItemView.findViewById(R.id.status);
+        Status.setText(status);
+
         TextView HomeTeamTV = (TextView) listItemView.findViewById(R.id.homeTeam);
         HomeTeamTV.setText(currentFixture.getHomeTeam());
 
@@ -48,13 +82,10 @@ public class FixtureAdapter extends ArrayAdapter<Fixture>{
         AwayTeamTV.setText(currentFixture.getAwayTeam());
 
         TextView HomeGoals = (TextView) listItemView.findViewById(R.id.homeGoals);
-        HomeGoals.setText(currentFixture.getHomeGoals());
+        HomeGoals.setText(homeGoals);
 
         TextView AwayGoals = (TextView) listItemView.findViewById(R.id.awayGoals);
-        AwayGoals.setText(currentFixture.getAwayGoals());
-
-        TextView Status = (TextView) listItemView.findViewById(R.id.status);
-        Status.setText(currentFixture.getStatus());
+        AwayGoals.setText(awayGoals);
 
         return listItemView;
     }
