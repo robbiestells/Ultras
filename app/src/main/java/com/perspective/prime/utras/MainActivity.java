@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity
             title = "About";
         }
         else if (id == R.id.scores) {
-            fragment = new AboutFragment();
+            fragment = new ScoresFragment();
             title = "Scores";
         }
         else {

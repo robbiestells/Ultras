@@ -4,13 +4,18 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -36,18 +41,18 @@ import models.Fixture;
 
 public class ScoresFragment extends Fragment {
     private ArrayList<Fixture> fixtures = new ArrayList<>();
-    private FixtureAdapter fixtureAdapter;
-    RecyclerView fixtureList;
+    ListView fixtureList;
+    ArrayAdapter<Fixture> fixtureAdapter;
     View rv;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-         rv = inflater.inflate(R.layout.fragment_scores, container, false);
+        rv = inflater.inflate(R.layout.fragment_scores, container, false);
 
-        fixtureList = (RecyclerView) rv.findViewById(R.id.fixtureList);
-        fixtureList.setLayoutManager(new LinearLayoutManager(getContext()));
+        fixtureList = (ListView) rv.findViewById(R.id.fixtureList);
+
         getData();
 
         return rv;
@@ -84,10 +89,7 @@ public class ScoresFragment extends Fragment {
             Toast toast = Toast.makeText(getContext(), "Fixtures updated", Toast.LENGTH_SHORT);
             toast.show();
 
-            // TODO: 4/7/17 return fixtures list
-            fixtureAdapter = new FixtureAdapter(ScoresFragment.this.getContext(), fixtures);
-            fixtureList.setAdapter(fixtureAdapter);
-
+            fixtureList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), fixtures));
         }
 
         @Override
@@ -98,13 +100,6 @@ public class ScoresFragment extends Fragment {
             String jsonResponse;
             try {
                 jsonResponse = makeHttpRequest(url);
-
-                //save json to settings
-//            SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = sharedPref.edit();
-//            editor.putString("lastJSON", jsonResponse);
-//            editor.commit();
-
                 fixtures = extractFeatureFromJson(jsonResponse);
             } catch (IOException e) {
                 Log.e("ASYNC: ", "Problem making the HTTP request.", e);
@@ -258,4 +253,5 @@ public class ScoresFragment extends Fragment {
 //            db.close();
 //        }
     }
+
 }

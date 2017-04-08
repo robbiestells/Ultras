@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:text="Scores Fragment"/>
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/fixtureList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
