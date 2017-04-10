@@ -66,7 +66,7 @@ public class ScoresFragment extends Fragment {
     int FilterNumber = 99;
     String FilterLetter = "n";
     String currentDate;
-
+ 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
