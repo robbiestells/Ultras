@@ -38,6 +38,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -55,13 +56,16 @@ import static android.R.attr.format;
 
 public class ScoresFragment extends Fragment {
     private ArrayList<Fixture> fixtures = new ArrayList<>();
-    ListView fixtureList;
+    private ArrayList<Fixture> englishFixtures = new ArrayList<>();
+    private ArrayList<Fixture> italianFixtures = new ArrayList<>();
+    ListView fixtureList, italianList, germanList, englishList, spainList;
     ArrayAdapter<Fixture> fixtureAdapter;
     View rv;
     Button NextButton;
     Button PreviousButton;
-    int FilterNumber = 1;
+    int FilterNumber = 99;
     String FilterLetter = "n";
+    String currentDate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,50 +73,112 @@ public class ScoresFragment extends Fragment {
         // Inflate the layout for this fragment
         rv = inflater.inflate(R.layout.fragment_scores, container, false);
 
-        fixtureList = (ListView) rv.findViewById(R.id.fixtureList);
+        //fixtureList = (ListView) rv.findViewById(R.id.fixtureList);
+        italianList = (ListView) rv.findViewById(R.id.ItalianFixtureList);
+//        germanList = (ListView) rv.findViewById(R.id.GermanFixtureList);
+        englishList = (ListView) rv.findViewById(R.id.EnglishFixtureList);
+//        spainList = (ListView) rv.findViewById(R.id.S);
 
         PreviousButton = (Button) rv.findViewById(R.id.PreviousButton);
         NextButton = (Button) rv.findViewById(R.id.NextButton);
 
-        getData("n1");
+        //get date
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        currentDate = df.format(c.getTime());
+
+       // getData("n99");
+        getData("p99");
 
         PreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (FilterLetter == "n") {
-                    if (FilterNumber == 1) {
-                        FilterLetter = "p";
-                        FilterNumber = 1;
-                    } else {
-                        FilterNumber = FilterNumber - 1;
-                    }
-                } else {
-                    FilterNumber = FilterNumber + 1;
+//                if (FilterLetter == "n") {
+//                    if (FilterNumber == 1) {
+//                        FilterLetter = "p";
+//                        FilterNumber = 1;
+//                    } else {
+//                        FilterNumber = FilterNumber - 1;
+//                    }
+//                } else {
+//                    FilterNumber = FilterNumber + 1;
+//                }
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Calendar c = Calendar.getInstance();
+                try {
+                    c.setTime(sdf.parse(currentDate));
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                getData(FilterLetter + FilterNumber);
+                c.add(Calendar.DATE, -1);  // number of days to add, can also use Calendar.DAY_OF_MONTH in place of Calendar.DATE
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+               currentDate = sdf1.format(c.getTime());
+                filterData(currentDate);
             }
         });
 
         NextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (FilterLetter == "p") {
-                    if (FilterNumber == 1) {
-                        FilterLetter = "n";
-                        FilterNumber = 1;
-                    } else {
-                        FilterNumber = FilterNumber - 1;
-                    }
-                } else {
-                    FilterNumber = FilterNumber + 1;
+//                if (FilterLetter == "p") {
+//                    if (FilterNumber == 1) {
+//                        FilterLetter = "n";
+//                        FilterNumber = 1;
+//                    } else {
+//                        FilterNumber = FilterNumber - 1;
+//                    }
+//                } else {
+//                    FilterNumber = FilterNumber + 1;
+//                }
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Calendar c = Calendar.getInstance();
+                try {
+                    c.setTime(sdf.parse(currentDate));
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                getData(FilterLetter + FilterNumber);
+                c.add(Calendar.DATE, 1);  // number of days to add, can also use Calendar.DAY_OF_MONTH in place of Calendar.DATE
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                currentDate = sdf1.format(c.getTime());
+                filterData(currentDate);
             }
         });
 
         return rv;
     }
 
+    private void filterData(String date) {
+        italianFixtures.clear();
+        englishFixtures.clear();
+
+        for (Fixture fixture:fixtures) {
+            if (fixture.getDate().contains(date)){
+                if (fixture.getCompetition().contains("438")) {
+                    italianFixtures.add(fixture);
+                }
+            }
+            if (fixture.getDate().contains(date)){
+                if (fixture.getCompetition().contains("426")) {
+                    englishFixtures.add(fixture);
+                }
+            }
+
+
+        }
+
+        if (italianFixtures.size() != 0) {
+            italianList.setVisibility(View.VISIBLE);
+            italianList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), italianFixtures));
+        } else{
+            italianList.setVisibility(View.INVISIBLE);
+        }
+        if (englishFixtures.size() != 0) {
+            englishList.setVisibility(View.VISIBLE);
+            englishList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), englishFixtures));
+        } else {
+            englishList.setVisibility(View.INVISIBLE);
+        }
+    }
 
     private void getData(String filter) {
         new GetFixtures(getActivity()).execute();
@@ -136,7 +202,10 @@ public class ScoresFragment extends Fragment {
             Toast toast = Toast.makeText(getContext(), "Getting Fixtures", Toast.LENGTH_SHORT);
             toast.show();
 
-            fixtures.clear();
+           // fixtures.clear();
+          //  italianFixtures.clear();
+          //  englishFixtures.clear();
+
 
         }
 
@@ -147,9 +216,24 @@ public class ScoresFragment extends Fragment {
             Toast toast = Toast.makeText(getContext(), "Fixtures updated", Toast.LENGTH_SHORT);
             toast.show();
 
+            for (Fixture fixture:fixtures) {
+                if (fixture.getCompetition().contains("438")){
+                    italianFixtures.add(fixture);
+                }
+                if (fixture.getCompetition().contains("426")){
+                    englishFixtures.add(fixture);
+                }
+
+            }
             saveFixtures(fixtures);
 
-            fixtureList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), fixtures));
+         //   fixtureList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), fixtures));
+            if (italianFixtures.size() != 0) {
+                italianList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), italianFixtures));
+            }
+            if (englishFixtures.size() != 0) {
+                englishList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), englishFixtures));
+            }
         }
 
         @Override
