@@ -49,6 +49,7 @@ import data.UltraDbHelper;
 import models.Fixture;
 
 import static android.R.attr.format;
+import static com.perspective.prime.utras.R.id.ItalianFixtureList;
 import static com.perspective.prime.utras.R.id.awayGoals;
 import static com.perspective.prime.utras.R.id.awayTeam;
 import static com.perspective.prime.utras.R.id.homeGoals;
@@ -77,7 +78,7 @@ public class ScoresFragment extends Fragment {
         rv = inflater.inflate(R.layout.fragment_scores, container, false);
 
         //fixtureList = (ListView) rv.findViewById(R.id.fixtureList);
-        italianList = (ListView) rv.findViewById(R.id.ItalianFixtureList);
+        italianList = (ListView) rv.findViewById(ItalianFixtureList);
 //        germanList = (ListView) rv.findViewById(R.id.GermanFixtureList);
         englishList = (ListView) rv.findViewById(R.id.EnglishFixtureList);
 //        spainList = (ListView) rv.findViewById(R.id.S);
@@ -195,8 +196,8 @@ public class ScoresFragment extends Fragment {
         protected void onPostExecute(ArrayList<Fixture> fixtures) {
             super.onPostExecute(fixtures);
 
-            Toast toast = Toast.makeText(getContext(), "Fixtures updated", Toast.LENGTH_SHORT);
-            toast.show();
+//            Toast toast = Toast.makeText(getContext(), "Fixtures updated", Toast.LENGTH_SHORT);
+//            toast.show();
 
             saveFixtures(fixtures);
             filterData(currentDate);

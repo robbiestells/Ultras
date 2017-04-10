@@ -92,7 +92,7 @@ public class FixtureAdapter extends ArrayAdapter<Fixture> {
         int homeCrest = getContext().getResources().getIdentifier(currentFixture.getHomeTeamId(), "drawable", getContext().getPackageName());
         HomeTeamCrest.setImageResource(homeCrest);
 
-        ImageView AwayTeamCrest = (ImageView) listItemView.findViewById(R.id.awayeTeamCrest);
+        ImageView AwayTeamCrest = (ImageView) listItemView.findViewById(R.id.awayTeamCrest);
         int awayCrest = getContext().getResources().getIdentifier(currentFixture.getAwayTeamId(), "drawable", getContext().getPackageName());
         AwayTeamCrest.setImageResource(awayCrest);
 
