@@ -1,6 +1,7 @@
 package adapters;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -86,6 +87,12 @@ public class FixtureAdapter extends ArrayAdapter<Fixture> {
 
         TextView AwayGoals = (TextView) listItemView.findViewById(R.id.awayGoals);
         AwayGoals.setText(awayGoals);
+
+        ImageView HomeTeamCrest = (ImageView) listItemView.findViewById(R.id.homeTeamCrest);
+        HomeTeamCrest.setImageResource(Integer.parseInt("R.drawable." + currentFixture.getHomeTeamId()));
+
+        ImageView AwayTeamCrest = (ImageView) listItemView.findViewById(R.id.awayeTeamCrest);
+        AwayTeamCrest.setImageResource(Integer.parseInt("R.drawable." + currentFixture.getAwayTeamId()));
 
         return listItemView;
     }

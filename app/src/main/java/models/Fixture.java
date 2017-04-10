@@ -19,6 +19,24 @@ public class Fixture implements Parcelable{
     String HomeGoals;
     String AwayGoals;
     String Competition;
+    String HomeTeamId;
+    String AwayTeamId;
+
+    public String getHomeTeamId() {
+        return HomeTeamId;
+    }
+
+    public void setHomeTeamId(String homeTeamId) {
+        HomeTeamId = homeTeamId;
+    }
+
+    public String getAwayTeamId() {
+        return AwayTeamId;
+    }
+
+    public void setAwayTeamId(String awayTeamId) {
+        AwayTeamId = awayTeamId;
+    }
 
     public Fixture(){};
     public String getFixtureId() {
@@ -100,8 +118,10 @@ public class Fixture implements Parcelable{
         out.writeString(HomeGoals);
         out.writeString(AwayGoals);
         out.writeString(Competition);
+        out.writeString(HomeTeamId);
+        out.writeString(AwayTeamId);
     }
-    public Fixture(String fixtureId, String date, String status, String homeTeam, String awayTeam, String homeGoals, String awayGoals, String competition){
+    public Fixture(String fixtureId, String date, String status, String homeTeam, String awayTeam, String homeGoals, String awayGoals, String competition, String homeTeamId, String awayTeamId){
         FixtureId = fixtureId;
         Date = date;
         Status = status;
@@ -110,6 +130,8 @@ public class Fixture implements Parcelable{
         HomeGoals = homeGoals;
         AwayGoals = awayGoals;
         Competition = competition;
+        HomeTeamId = homeTeamId;
+        AwayTeamId = awayTeamId;
     }
     private Fixture(Parcel in){
         FixtureId = in.readString();
@@ -120,6 +142,8 @@ public class Fixture implements Parcelable{
         HomeGoals = in.readString();
         AwayGoals = in.readString();
         Competition = in.readString();
+        HomeTeamId = in.readString();
+        AwayTeamId = in.readString();
     }
 
     public static final Parcelable.Creator<Fixture> CREATOR = new Parcelable.Creator<Fixture>(){

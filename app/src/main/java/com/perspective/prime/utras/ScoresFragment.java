@@ -68,8 +68,6 @@ public class ScoresFragment extends Fragment {
     View rv;
     Button NextButton;
     Button PreviousButton;
-    int FilterNumber = 99;
-    String FilterLetter = "n";
     String currentDate;
 
     @Override
@@ -110,7 +108,7 @@ public class ScoresFragment extends Fragment {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                c.add(Calendar.DATE, -1);  // number of days to add, can also use Calendar.DAY_OF_MONTH in place of Calendar.DATE
+                c.add(Calendar.DATE, -1);
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
                 currentDate = sdf1.format(c.getTime());
                 filterData(currentDate);
@@ -128,7 +126,7 @@ public class ScoresFragment extends Fragment {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                c.add(Calendar.DATE, 1);  // number of days to add, can also use Calendar.DAY_OF_MONTH in place of Calendar.DATE
+                c.add(Calendar.DATE, 1);
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
                 currentDate = sdf1.format(c.getTime());
                 filterData(currentDate);
@@ -261,6 +259,8 @@ public class ScoresFragment extends Fragment {
                     String homeGoals = "";
                     String awayGoals = "";
                     String competition = "";
+                    String homeTeamId = "";
+                    String awayTeamId = "";
 
                     JSONObject resultArray = currentFixture.getJSONObject("result");
 
@@ -274,6 +274,12 @@ public class ScoresFragment extends Fragment {
 
                     JSONObject selfArray = linkArray.getJSONObject("self");
                     fixtureId = selfArray.getString("href");
+
+                    JSONObject homeArray = linkArray.getJSONObject("homeTeam");
+                    homeTeamId = homeArray.getString("href");
+
+                    JSONObject awayArray = linkArray.getJSONObject("awayTeam");
+                    awayTeamId = awayArray.getString("href");
 
                     Date DateTime = new Date();
 
@@ -297,8 +303,16 @@ public class ScoresFragment extends Fragment {
                     int fixtureInt = fixtureSplit.length;
                     fixtureId = fixtureSplit[fixtureInt - 1];
 
+                    String[]  homeIdSplit = homeTeamId.split("/");
+                    int homeInt = homeIdSplit.length;
+                    homeTeamId = "a" + homeIdSplit[homeInt - 1];
+
+                    String[]  awayIdSplit = awayTeamId.split("/");
+                    int awayInt = awayIdSplit.length;
+                    awayTeamId = "a" + awayIdSplit[awayInt - 1];
+
                     // Create a new Fixture object
-                    Fixture fixture = new Fixture(fixtureId, localDate, status, homeTeam, awayTeam, homeGoals, awayGoals, competition);
+                    Fixture fixture = new Fixture(fixtureId, localDate, status, homeTeam, awayTeam, homeGoals, awayGoals, competition, homeTeamId, awayTeamId);
 
                     //add feed item to list
                     fixtures.add(fixture);
