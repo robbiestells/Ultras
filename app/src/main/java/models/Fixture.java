@@ -20,6 +20,7 @@ public class Fixture implements Parcelable{
     String AwayGoals;
     String Competition;
 
+    public Fixture(){};
     public String getFixtureId() {
         return FixtureId;
     }
