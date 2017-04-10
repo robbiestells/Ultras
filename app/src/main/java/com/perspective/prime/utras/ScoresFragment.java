@@ -64,7 +64,7 @@ public class ScoresFragment extends Fragment {
     private ArrayList<Fixture> englishFixtures = new ArrayList<>();
     private ArrayList<Fixture> italianFixtures = new ArrayList<>();
     ListView fixtureList, italianList, germanList, englishList, spainList;
-    TextView dateFilter;
+    TextView dateFilter, italianGames, englishGames;
     ArrayAdapter<Fixture> fixtureAdapter;
     View rv;
     Button NextButton;
@@ -84,6 +84,8 @@ public class ScoresFragment extends Fragment {
 //        spainList = (ListView) rv.findViewById(R.id.S);
 
         dateFilter = (TextView) rv.findViewById(R.id.DateFilter);
+        italianGames = (TextView) rv.findViewById(R.id.italianGames);
+        englishGames = (TextView) rv.findViewById(R.id.englishGames);
 
         PreviousButton = (Button) rv.findViewById(R.id.PreviousButton);
         NextButton = (Button) rv.findViewById(R.id.NextButton);
@@ -158,6 +160,7 @@ public class ScoresFragment extends Fragment {
         if (italianFixtures.size() != 0) {
             italianList.setVisibility(View.VISIBLE);
             italianList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), italianFixtures));
+
         } else {
             italianList.setVisibility(View.INVISIBLE);
         }
@@ -166,6 +169,18 @@ public class ScoresFragment extends Fragment {
             englishList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), englishFixtures));
         } else {
             englishList.setVisibility(View.INVISIBLE);
+        }
+
+        if (italianFixtures.size() == 1) {
+            italianGames.setText("(" + italianFixtures.size() + " game)");
+        } else {
+            italianGames.setText("(" + italianFixtures.size() + " games)");
+        }
+
+        if (englishFixtures.size() == 1) {
+            englishGames.setText("(" + englishFixtures.size() + " game)");
+        } else {
+            englishGames.setText("(" + englishFixtures.size() + " games)");
         }
     }
 
