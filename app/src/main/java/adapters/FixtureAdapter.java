@@ -67,8 +67,8 @@ public class FixtureAdapter extends ArrayAdapter<Fixture> {
             }
             SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
             status = formatter.format(testDate);
-        } else if(status.contains("PLAY")){
-            status = "";
+        } else if (status.contains("PLAY")) {
+            status = "Live";
             homeGoals = currentFixture.getHomeGoals();
             awayGoals = currentFixture.getAwayGoals();
         }
@@ -88,13 +88,40 @@ public class FixtureAdapter extends ArrayAdapter<Fixture> {
         TextView AwayGoals = (TextView) listItemView.findViewById(R.id.awayGoals);
         AwayGoals.setText(awayGoals);
 
-        ImageView HomeTeamCrest = (ImageView) listItemView.findViewById(R.id.homeTeamCrest);
-        int homeCrest = getContext().getResources().getIdentifier(currentFixture.getHomeTeamId(), "drawable", getContext().getPackageName());
-        HomeTeamCrest.setImageResource(homeCrest);
+        TextView LeagueName = (TextView) listItemView.findViewById(R.id.leagueName);
+        String leagueName;
+        if (currentFixture.getCompetition().contains("426")) {
+            leagueName = "Premier League";
+        } else if (currentFixture.getCompetition().contains("436")) {
+            leagueName = "La Liga";
+        } else if (currentFixture.getCompetition().contains("431")) {
+            leagueName = "Bundesliga";
+        } else if (currentFixture.getCompetition().contains("438")) {
+            leagueName = "Serie A";
+        } else if (currentFixture.getCompetition().contains("440")) {
+            leagueName = "Champions League";
+        }
+        else {
+            leagueName = "Other";
+        }
 
+        LeagueName.setText(leagueName);
+
+        ImageView HomeTeamCrest = (ImageView) listItemView.findViewById(R.id.homeTeamCrest);
         ImageView AwayTeamCrest = (ImageView) listItemView.findViewById(R.id.awayTeamCrest);
-        int awayCrest = getContext().getResources().getIdentifier(currentFixture.getAwayTeamId(), "drawable", getContext().getPackageName());
-        AwayTeamCrest.setImageResource(awayCrest);
+
+        if (currentFixture.getHomeTeamId() != null){
+            int homeCrest = getContext().getResources().getIdentifier(currentFixture.getHomeTeamId(), "drawable", getContext().getPackageName());
+            HomeTeamCrest.setImageResource(homeCrest);
+        }
+        if (currentFixture.getAwayTeamId() != null){
+            int homeCrest = getContext().getResources().getIdentifier(currentFixture.getHomeTeamId(), "drawable", getContext().getPackageName());
+            HomeTeamCrest.setImageResource(homeCrest);
+            int awayCrest = getContext().getResources().getIdentifier(currentFixture.getAwayTeamId(), "drawable", getContext().getPackageName());
+            AwayTeamCrest.setImageResource(awayCrest);
+        }
+
+
 
         return listItemView;
     }

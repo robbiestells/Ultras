@@ -12,6 +12,9 @@ import android.util.Log;
 
 import data.UltraContract.FixtureEntry;
 
+import static android.R.attr.id;
+import static android.R.attr.priority;
+
 /**
  * Created by robbi on 4/8/2017.
  */
@@ -122,4 +125,5 @@ public class UltraProvider extends ContentProvider{
     public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
         return 0;
     }
+
 }

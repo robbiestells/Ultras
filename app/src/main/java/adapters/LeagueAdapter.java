@@ -1,5 +1,7 @@
 package adapters;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.media.Image;
 import android.support.annotation.NonNull;
@@ -10,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.perspective.prime.utras.LeaguePageFragment;
+import com.perspective.prime.utras.LeaguesFragment;
 import com.perspective.prime.utras.R;
 
 import java.text.SimpleDateFormat;
@@ -19,6 +23,7 @@ import java.util.Date;
 import models.Fixture;
 import models.League;
 
+import static android.R.attr.fragment;
 import static com.perspective.prime.utras.R.id.awayGoals;
 import static com.perspective.prime.utras.R.id.homeGoals;
 import static com.perspective.prime.utras.R.id.status;
@@ -51,6 +56,19 @@ public class LeagueAdapter extends ArrayAdapter<League> {
 
         ImageView leagueLogo = (ImageView) listItemView.findViewById(R.id.leagueLogo);
         leagueLogo.setImageResource(LeagueLogo);
+
+        leagueLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Fragment fragment;
+//                fragment = new LeaguePageFragment();
+//
+//                FragmentManager fragmentManager =  getSupportFragmentManger();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.content_frame, fragment)
+//                        .commit();
+            }
+        });
 
         return listItemView;
     }

@@ -11,7 +11,7 @@ import data.UltraContract.FixtureEntry;
  */
 
 public class UltraDbHelper extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_NAME = "ultra.db";
 
@@ -30,6 +30,8 @@ public class UltraDbHelper extends SQLiteOpenHelper{
                 FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM + " TEXT, " +
                 FixtureEntry.COLUMN_FIXTURE_BOME_GOALS + " TEXT, " +
                 FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS + " TEXT, " +
+                FixtureEntry.COLUMN_FIXTURE_HOME_ID + " TEXT, " +
+                FixtureEntry.COLUMN_FIXTURE_AWAY_ID + " TEXT, " +
                 FixtureEntry.COLUMN_FIXTURE_COMPETITION + " TEXT);";
 
         sqLiteDatabase.execSQL(SQL_CREATE_FIXTURE_TABLE);

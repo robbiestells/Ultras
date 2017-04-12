@@ -48,12 +48,6 @@ import data.UltraContract.FixtureEntry;
 import data.UltraDbHelper;
 import models.Fixture;
 
-import static android.R.attr.format;
-import static com.perspective.prime.utras.R.id.ItalianFixtureList;
-import static com.perspective.prime.utras.R.id.awayGoals;
-import static com.perspective.prime.utras.R.id.awayTeam;
-import static com.perspective.prime.utras.R.id.homeGoals;
-import static com.perspective.prime.utras.R.id.homeTeam;
 
 /**
  * Created by rob on 4/7/17.
@@ -61,11 +55,9 @@ import static com.perspective.prime.utras.R.id.homeTeam;
 
 public class ScoresFragment extends Fragment {
     private ArrayList<Fixture> fixtures = new ArrayList<>();
-    private ArrayList<Fixture> englishFixtures = new ArrayList<>();
-    private ArrayList<Fixture> italianFixtures = new ArrayList<>();
-    ListView fixtureList, italianList, germanList, englishList, spainList;
-    TextView dateFilter, italianGames, englishGames;
-    ArrayAdapter<Fixture> fixtureAdapter;
+    private ArrayList<Fixture> displayFixtures = new ArrayList<>();
+    ListView fixtureList;
+    TextView dateFilter, fixtureNumbers;
     View rv;
     Button NextButton;
     Button PreviousButton;
@@ -77,15 +69,10 @@ public class ScoresFragment extends Fragment {
         // Inflate the layout for this fragment
         rv = inflater.inflate(R.layout.fragment_scores, container, false);
 
-        //fixtureList = (ListView) rv.findViewById(R.id.fixtureList);
-        italianList = (ListView) rv.findViewById(ItalianFixtureList);
-//        germanList = (ListView) rv.findViewById(R.id.GermanFixtureList);
-        englishList = (ListView) rv.findViewById(R.id.EnglishFixtureList);
-//        spainList = (ListView) rv.findViewById(R.id.S);
+        fixtureList = (ListView) rv.findViewById(R.id.fixtureList);
 
         dateFilter = (TextView) rv.findViewById(R.id.DateFilter);
-        italianGames = (TextView) rv.findViewById(R.id.italianGames);
-        englishGames = (TextView) rv.findViewById(R.id.englishGames);
+        fixtureNumbers = (TextView) rv.findViewById(R.id.fixtureNumbers);
 
         PreviousButton = (Button) rv.findViewById(R.id.PreviousButton);
         NextButton = (Button) rv.findViewById(R.id.NextButton);
@@ -98,8 +85,8 @@ public class ScoresFragment extends Fragment {
 
         getData();
 
-        fixtures = getSavedFixtures(getContext(), currentDate);
-        filterData(currentDate);
+      //  fixtures = getSavedFixtures(getContext(), currentDate);
+      //  filterData(currentDate);
 
         PreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,47 +128,33 @@ public class ScoresFragment extends Fragment {
     }
 
     private void filterData(String date) {
-        italianFixtures.clear();
-        englishFixtures.clear();
+        displayFixtures.clear();
+        fixtures.clear();
+        fixtures = getSavedFixtures(getContext(), date);
 
         for (Fixture fixture : fixtures) {
             if (fixture.getDate().contains(date)) {
-                if (fixture.getCompetition().contains("438")) {
-                    italianFixtures.add(fixture);
-                }
-            }
-            if (fixture.getDate().contains(date)) {
-                if (fixture.getCompetition().contains("426")) {
-                    englishFixtures.add(fixture);
+                if (fixture.getCompetition().contains("426") || fixture.getCompetition().contains("438")
+                        || fixture.getCompetition().contains("436") || fixture.getCompetition().contains("431")
+                        || fixture.getCompetition().contains("440")) {
+                displayFixtures.add(fixture);
                 }
             }
         }
 
-        if (italianFixtures.size() != 0) {
-            italianList.setVisibility(View.VISIBLE);
-            italianList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), italianFixtures));
-
+        if (displayFixtures.size() !=0){
+            fixtureList.setVisibility(View.VISIBLE);
+            fixtureList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), displayFixtures));
+            String fixtures = displayFixtures.size()  + " fixtures";
+            if (displayFixtures.size() == 1){
+                fixtures = "1 fixture";
+            }
+            fixtureNumbers.setText(fixtures);
         } else {
-            italianList.setVisibility(View.INVISIBLE);
-        }
-        if (englishFixtures.size() != 0) {
-            englishList.setVisibility(View.VISIBLE);
-            englishList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), englishFixtures));
-        } else {
-            englishList.setVisibility(View.INVISIBLE);
-        }
-
-        if (italianFixtures.size() == 1) {
-            italianGames.setText("(" + italianFixtures.size() + " game)");
-        } else {
-            italianGames.setText("(" + italianFixtures.size() + " games)");
+            fixtureList.setVisibility(View.INVISIBLE);
+            fixtureNumbers.setText("No fixtures found");
         }
 
-        if (englishFixtures.size() == 1) {
-            englishGames.setText("(" + englishFixtures.size() + " game)");
-        } else {
-            englishGames.setText("(" + englishFixtures.size() + " games)");
-        }
     }
 
     private void getData() {
@@ -221,7 +194,7 @@ public class ScoresFragment extends Fragment {
         @Override
         protected ArrayList<Fixture> doInBackground(Void... params) {
 
-            String feed = "http://api.football-data.org/v1/fixtures?timeFrame=" + "n" + "99";
+            String feed = "http://api.football-data.org/v1/fixtures?timeFrame=" + "n" + "10";
             URL url = createUrl(feed);
             String jsonResponse;
             try {
@@ -232,7 +205,7 @@ public class ScoresFragment extends Fragment {
             }
 
             ArrayList<Fixture> backFixtures = new ArrayList<>();
-            String feedBack = "http://api.football-data.org/v1/fixtures?timeFrame=" + "p" + "99";
+            String feedBack = "http://api.football-data.org/v1/fixtures?timeFrame=" + "p" + "10";
             URL urlBack = createUrl(feedBack);
             String jsonResponseBack;
             try {
@@ -352,6 +325,7 @@ public class ScoresFragment extends Fragment {
             try {
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
+                urlConnection.setRequestProperty("X-Auth-Token", "cc99d6b0d1024981b61b21fb606e4a48");
                 urlConnection.setReadTimeout(10000 /* milliseconds */);
                 urlConnection.setConnectTimeout(15000 /* milliseconds */);
                 urlConnection.connect();
@@ -409,41 +383,59 @@ public class ScoresFragment extends Fragment {
 
             for (Fixture item : fixtures) {
 
-                String query = "SELECT * FROM " + FixtureEntry.TABLE_NAME + " WHERE " + FixtureEntry.COLUMN_FIXTURE_ID
-                        + " =" + item.getFixtureId();
-                Cursor cursor = db.rawQuery(query, new String[]{});
+                ContentValues values = new ContentValues();
+                values.put(FixtureEntry.COLUMN_FIXTURE_ID, item.getFixtureId());
+                values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS, item.getAwayGoals());
+                values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM, item.getAwayTeam());
+                values.put(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS, item.getHomeGoals());
+                values.put(FixtureEntry.COLUMN_FIXTURE_COMPETITION, item.getCompetition());
+                values.put(FixtureEntry.COLUMN_FIXTURE_DATE, item.getDate());
+                values.put(FixtureEntry.COLUMN_FIXTURE_HOME_TEAM, item.getHomeTeam());
+                values.put(FixtureEntry.COLUMN_FIXTURE_STATUS, item.getStatus());
+                values.put(FixtureEntry.COLUMN_FIXTURE_HOME_ID, item.getHomeTeamId());
+                values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_ID, item.getAwayTeamId());
 
-                if (cursor.moveToFirst()) {
-                    //get values
-                    ContentValues values = new ContentValues();
-                    values.put(FixtureEntry.COLUMN_FIXTURE_ID, item.getFixtureId());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS, item.getAwayGoals());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM, item.getAwayTeam());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS, item.getHomeGoals());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_COMPETITION, item.getCompetition());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_DATE, item.getDate());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_HOME_TEAM, item.getHomeTeam());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_STATUS, item.getStatus());
+                int id = (int) db.insertWithOnConflict(FixtureEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                if (id == -1) {
+                    db.update(FixtureEntry.TABLE_NAME, values, "_id=?", new String[] {item.getFixtureId()});
 
-                    //insert a new entry with the data above
-                    long newRowId = db.insert(FixtureEntry.TABLE_NAME, null, values);
-                    Log.v("Insert Fixture item", "New row ID: " + newRowId);
-                } else {
-                    //get values
-                    ContentValues values = new ContentValues();
-                    values.put(FixtureEntry.COLUMN_FIXTURE_ID, item.getFixtureId());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS, item.getAwayGoals());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM, item.getAwayTeam());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS, item.getHomeGoals());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_COMPETITION, item.getCompetition());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_DATE, item.getDate());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_HOME_TEAM, item.getHomeTeam());
-                    values.put(FixtureEntry.COLUMN_FIXTURE_STATUS, item.getStatus());
-
-                    long updateRowId = db.update(FixtureEntry.TABLE_NAME, values, null, null);
-                    Log.v("Update Fixture item", "Update row ID: " + item.getFixtureId());
                 }
-                cursor.close();
+
+//                String query = "SELECT * FROM " + FixtureEntry.TABLE_NAME + " WHERE " + FixtureEntry.COLUMN_FIXTURE_ID
+//                        + " = " + item.getFixtureId();
+//                Cursor cursor = db.rawQuery(query, new String[]{});
+//
+//                if (cursor.getCount() == 0) {
+//                    //get values
+//                    ContentValues values = new ContentValues();
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_ID, item.getFixtureId());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS, item.getAwayGoals());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM, item.getAwayTeam());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS, item.getHomeGoals());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_COMPETITION, item.getCompetition());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_DATE, item.getDate());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_HOME_TEAM, item.getHomeTeam());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_STATUS, item.getStatus());
+//
+//                    //insert a new entry with the data above
+//                    long newRowId = db.insert(FixtureEntry.TABLE_NAME, null, values);
+//                    Log.v("Insert Fixture item", "New row ID: " + newRowId);
+//                } else {
+//                    //get values
+//                    ContentValues values = new ContentValues();
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_ID, item.getFixtureId());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS, item.getAwayGoals());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM, item.getAwayTeam());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS, item.getHomeGoals());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_COMPETITION, item.getCompetition());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_DATE, item.getDate());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_HOME_TEAM, item.getHomeTeam());
+//                    values.put(FixtureEntry.COLUMN_FIXTURE_STATUS, item.getStatus());
+//
+//                    long updateRowId = db.update(FixtureEntry.TABLE_NAME, values, null, null);
+//                    Log.v("Update Fixture item", "Update row ID: " + item.getFixtureId());
+//                }
+//                cursor.close();
             }
 
             db.close();
@@ -455,11 +447,10 @@ public class ScoresFragment extends Fragment {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         ArrayList<Fixture> fixtures = new ArrayList<>();
 
-        String query = "SELECT * FROM " + FixtureEntry.TABLE_NAME;
-        //+ " WHERE " + FixtureEntry.COLUMN_FIXTURE_DATE + " =?";
+        String query = "SELECT * FROM " + FixtureEntry.TABLE_NAME+ " WHERE " + FixtureEntry.COLUMN_FIXTURE_DATE +  " BETWEEN '" + date + " 00:00:00.000' AND '" + date + " 23:59:59.000'";
 
         Cursor cursor = db.rawQuery(query, new String[]{});
-        // Cursor cursor = db.rawQuery(query, new String[]{});
+        //Cursor cursor = db.rawQuery(query, null);
 
         int idColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_ID);
         int dateColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_DATE);
@@ -469,26 +460,32 @@ public class ScoresFragment extends Fragment {
         int homeGoalsColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS);
         int awayGoalsColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS);
         int competitionColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_COMPETITION);
+        int homeIdColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_HOME_ID);
+        int awayIdColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_AWAY_ID);
 
 
         cursor.moveToFirst();
+        if(cursor.moveToFirst()){
+            do{
+                Fixture item = new Fixture();
+                item.setFixtureId(cursor.getString(idColumnIndex));
+                item.setDate(cursor.getString(dateColumnIndex));
+                item.setStatus(cursor.getString(statusColumnIndex));
+                item.setHomeTeam(cursor.getString(homeTeamColumnIndex));
+                item.setAwayTeam(cursor.getString(awayTeamColumnIndex));
+                item.setHomeGoals(cursor.getString(homeGoalsColumnIndex));
+                item.setAwayGoals(cursor.getString(awayGoalsColumnIndex));
+                item.setCompetition(cursor.getString(competitionColumnIndex));
+                item.setHomeTeamId(cursor.getString(homeIdColumnIndex));
+                item.setAwayTeamId(cursor.getString(awayIdColumnIndex));
+                fixtures.add(item);
+                cursor.moveToNext();
 
-        while (!cursor.isAfterLast()) {
-            Fixture item = new Fixture();
-            item.setFixtureId(cursor.getString(idColumnIndex));
-            item.setDate(cursor.getString(dateColumnIndex));
-            item.setStatus(cursor.getString(statusColumnIndex));
-            item.setHomeTeam(cursor.getString(homeTeamColumnIndex));
-            item.setAwayTeam(cursor.getString(awayTeamColumnIndex));
-            item.setHomeGoals(cursor.getString(homeGoalsColumnIndex));
-            item.setAwayGoals(cursor.getString(awayGoalsColumnIndex));
-            item.setCompetition(cursor.getString(competitionColumnIndex));
-            fixtures.add(item);
-            cursor.moveToNext();
+            }while(cursor.moveToNext());
         }
         cursor.close();
         db.close();
-        return fixtures;
+      return fixtures;
     }
 
 }

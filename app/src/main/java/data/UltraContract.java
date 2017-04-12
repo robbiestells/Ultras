@@ -41,6 +41,8 @@ public class UltraContract {
         public static final String COLUMN_FIXTURE_AWAY_TEAM = "fixture_away_team";
         public static final String COLUMN_FIXTURE_BOME_GOALS = "fixture_home_goals";
         public static final String COLUMN_FIXTURE_AWAY_GOALS = "fixture_away_goals";
+        public static final String COLUMN_FIXTURE_HOME_ID = "fixture_home_id";
+        public static final String COLUMN_FIXTURE_AWAY_ID = "fixture_away_id";
         public static final String COLUMN_FIXTURE_COMPETITION = "fixture_competition";
 
         public static Uri buildActivityUri(long id) {
