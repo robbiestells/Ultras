@@ -395,47 +395,12 @@ public class ScoresFragment extends Fragment {
                 values.put(FixtureEntry.COLUMN_FIXTURE_HOME_ID, item.getHomeTeamId());
                 values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_ID, item.getAwayTeamId());
 
-                int id = (int) db.insertWithOnConflict(FixtureEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
-                if (id == -1) {
-                    db.update(FixtureEntry.TABLE_NAME, values, "_id=?", new String[] {item.getFixtureId()});
+                int id = (int) db.update(FixtureEntry.TABLE_NAME, values, FixtureEntry.COLUMN_FIXTURE_ID + " =?", new String[] {item.getFixtureId()});
+                if (id == 0) {
+                    db.insert(FixtureEntry.TABLE_NAME, null, values);
 
                 }
 
-//                String query = "SELECT * FROM " + FixtureEntry.TABLE_NAME + " WHERE " + FixtureEntry.COLUMN_FIXTURE_ID
-//                        + " = " + item.getFixtureId();
-//                Cursor cursor = db.rawQuery(query, new String[]{});
-//
-//                if (cursor.getCount() == 0) {
-//                    //get values
-//                    ContentValues values = new ContentValues();
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_ID, item.getFixtureId());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS, item.getAwayGoals());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM, item.getAwayTeam());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS, item.getHomeGoals());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_COMPETITION, item.getCompetition());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_DATE, item.getDate());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_HOME_TEAM, item.getHomeTeam());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_STATUS, item.getStatus());
-//
-//                    //insert a new entry with the data above
-//                    long newRowId = db.insert(FixtureEntry.TABLE_NAME, null, values);
-//                    Log.v("Insert Fixture item", "New row ID: " + newRowId);
-//                } else {
-//                    //get values
-//                    ContentValues values = new ContentValues();
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_ID, item.getFixtureId());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS, item.getAwayGoals());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM, item.getAwayTeam());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS, item.getHomeGoals());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_COMPETITION, item.getCompetition());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_DATE, item.getDate());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_HOME_TEAM, item.getHomeTeam());
-//                    values.put(FixtureEntry.COLUMN_FIXTURE_STATUS, item.getStatus());
-//
-//                    long updateRowId = db.update(FixtureEntry.TABLE_NAME, values, null, null);
-//                    Log.v("Update Fixture item", "Update row ID: " + item.getFixtureId());
-//                }
-//                cursor.close();
             }
 
             db.close();
