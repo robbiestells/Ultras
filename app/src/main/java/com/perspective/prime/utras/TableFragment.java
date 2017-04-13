@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -34,6 +35,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import adapters.LeagueAdapter;
+import adapters.TableAdapter;
 import data.UltraContract;
 import data.UltraDbHelper;
 import models.Fixture;
@@ -48,6 +50,7 @@ public class TableFragment extends Fragment {
     View tv;
     ArrayList<TableClub> tableClubs;
     String leagueId;
+    ListView tableListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,6 +65,8 @@ public class TableFragment extends Fragment {
         } else{
             leagueId = "308";
         }
+
+        tableListView = (ListView) tv.findViewById(R.id.tableListView);
 
         getData();
 
@@ -143,8 +148,20 @@ public class TableFragment extends Fragment {
                     String draws = currentClub.getString("draws");
                     String losses = currentClub.getString("losses");
 
+
+                    String teamId;
+                    JSONObject linkArray = currentClub.getJSONObject("_links");
+
+                    JSONObject teamArray = linkArray.getJSONObject("team");
+                    teamId = teamArray.getString("href");
+
+                    String[] teamSplit = teamId.split("/");
+                    int teamInt = teamSplit.length;
+                    teamId = teamSplit[teamInt - 1];
+
+
                     // Create a new Club object
-                    TableClub tableClub = new TableClub(rank, team, playedGames, points, goals, goalsAgainst, goalDifference, wins, draws, losses);
+                    TableClub tableClub = new TableClub(rank, team, playedGames, points, goals, goalsAgainst, goalDifference, wins, draws, losses, teamId);
 
                     //add feed item to list
                     tableClubs.add(tableClub);
@@ -222,6 +239,10 @@ public class TableFragment extends Fragment {
 
 
         private void displayTable() {
+            if (tableClubs != null){
+                tableListView.setAdapter(new TableAdapter(getActivity().getApplicationContext(), tableClubs));
+            }
+
         }
     }
 }

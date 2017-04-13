@@ -15,8 +15,9 @@ public class TableClub {
     String Wins;
     String Draws;
     String Losses;
+    String TeamId;
 
-    public TableClub ( String Rank, String Team, String PlayedGames, String Points, String Goals, String GoalsAgainst, String GoalDifference, String Wins, String Draws, String Losses){
+    public TableClub ( String Rank, String Team, String PlayedGames, String Points, String Goals, String GoalsAgainst, String GoalDifference, String Wins, String Draws, String Losses, String TeamId){
         this.Rank = Rank;
         this.Team = Team;
         this.PlayedGames = PlayedGames;
@@ -27,6 +28,7 @@ public class TableClub {
         this.Wins = Wins;
         this.Draws = Draws;
         this.Losses = Losses;
+        this.TeamId = TeamId;
     }
 
     public String getRank() {
@@ -108,5 +110,13 @@ public class TableClub {
 
     public void setLosses(String losses) {
         Losses = losses;
+    }
+
+    public String getTeamId() {
+        return TeamId;
+    }
+
+    public void setTeamId(String teamId) {
+        TeamId = teamId;
     }
 }

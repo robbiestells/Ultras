@@ -33,35 +33,38 @@ public class LeaguePageFragment extends Fragment {
         // Inflate the layout for this fragment
         lv = inflater.inflate(R.layout.fragment_league_page, container, false);
 
-        Toolbar toolbar = (Toolbar) lv.findViewById(R.id.toolbar);
+       // Toolbar toolbar = (Toolbar) lv.findViewById(R.id.toolbar);
         //((ActionBarActivity)getActivity()).getSupportActionBar(toolbar);
 
-        TabLayout tabLayout = (TabLayout) lv.findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Table"));
-        tabLayout.addTab(tabLayout.newTab().setText("Scores"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+//        TabLayout tabLayout = (TabLayout) lv.findViewById(R.id.tab_layout);
+//        tabLayout.addTab(tabLayout.newTab().setText("Table"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Scores"));
+//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = (ViewPager) lv.findViewById(R.id.pager);
-        final PagerAdapter adapter = new PagerAdapter
-                (getFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
+//        final ViewPager viewPager = (ViewPager) lv.findViewById(R.id.pager);
+//        final PagerAdapter adapter = new PagerAdapter
+//                (getFragmentManager(), tabLayout.getTabCount());
+//        viewPager.setAdapter(adapter);
+//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                viewPager.setCurrentItem(tab.getPosition());
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
 
-            }
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
         return lv;
     }
