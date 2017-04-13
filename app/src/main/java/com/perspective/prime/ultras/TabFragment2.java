@@ -1,4 +1,4 @@
-package com.perspective.prime.utras;
+package com.perspective.prime.ultras;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,10 +10,10 @@ import android.view.ViewGroup;
  * Created by rob on 4/12/17.
  */
 
-public class TabFragment1 extends Fragment {
+public class TabFragment2 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.tab_table, container, false);
+        return inflater.inflate(R.layout.tab_scores, container, false);
     }
 }

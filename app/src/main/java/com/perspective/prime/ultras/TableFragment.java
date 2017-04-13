@@ -1,10 +1,7 @@
-package com.perspective.prime.utras;
+package com.perspective.prime.ultras;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.ContentValues;
+import android.support.v4.app.Fragment;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,18 +24,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.TimeZone;
 
-import adapters.LeagueAdapter;
 import adapters.TableAdapter;
-import data.UltraContract;
-import data.UltraDbHelper;
-import models.Fixture;
-import models.League;
 import models.TableClub;
 
 /**
@@ -57,15 +44,19 @@ public class TableFragment extends Fragment {
                              Bundle savedInstanceState) {
         tv = inflater.inflate(R.layout.fragment_table, container, false);
 
-        String league = getArguments().getString("league");
-        if (league == "Premier League"){
-            leagueId = "426";
-        } else if (league == "Serie A"){
-            leagueId = "438";
-        } else{
+        Bundle b = getArguments();
+        if (b != null) {
+            String league = b.getString("league");
+            if (league == "Premier League") {
+                leagueId = "426";
+            } else if (league == "Serie A") {
+                leagueId = "438";
+            } else {
+                leagueId = "308";
+            }
+        } else {
             leagueId = "308";
         }
-
         tableListView = (ListView) tv.findViewById(R.id.tableListView);
 
         getData();

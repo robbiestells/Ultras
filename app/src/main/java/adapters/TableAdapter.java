@@ -9,25 +9,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.perspective.prime.utras.R;
+import com.perspective.prime.ultras.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-import models.Fixture;
 import models.TableClub;
-
-import static android.R.attr.gravity;
-import static android.R.attr.id;
-import static android.R.attr.layout_gravity;
-import static android.R.attr.layout_height;
-import static android.R.attr.layout_marginStart;
-import static android.R.attr.layout_weight;
-import static android.R.attr.layout_width;
-import static com.perspective.prime.utras.R.id.awayGoals;
-import static com.perspective.prime.utras.R.id.homeGoals;
-import static com.perspective.prime.utras.R.id.status;
 
 /**
  * Created by rob on 4/13/17.

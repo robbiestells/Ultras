@@ -4,27 +4,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/scores"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_soccer_white_24dp"
             android:title="Scores" />
         <item
             android:id="@+id/Leagues"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_trophy_outline_white_36dp"
             android:title="Leagues" />
-        <!--<item-->
-            <!--android:id="@+id/nav_slideshow"-->
-            <!--android:icon="@drawable/ic_menu_slideshow"-->
-            <!--android:title="Slideshow" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_manage"-->
-            <!--android:icon="@drawable/ic_menu_manage"-->
-            <!--android:title="Tools" />-->
     </group>
 
     <group >
-        <menu>
+        <menu >
             <item
                 android:id="@+id/about"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_information_outline_white_18dp"
                 android:title="About" />
 
         </menu>

@@ -1,4 +1,4 @@
-package com.perspective.prime.utras;
+package com.perspective.prime.ultras;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

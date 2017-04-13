@@ -1,7 +1,7 @@
-package com.perspective.prime.utras;
+package com.perspective.prime.ultras;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,6 @@ import android.widget.GridView;
 
 import java.util.ArrayList;
 
-import adapters.FixtureAdapter;
 import adapters.LeagueAdapter;
 import models.League;
 
@@ -37,17 +36,27 @@ public class LeaguesFragment extends Fragment {
         leagues.add(new League("Serie A", R.drawable.seriea));
 
         LeagueGridView.setAdapter(new LeagueAdapter(getActivity().getApplicationContext(), leagues));
-//        LeagueGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Fragment fragment;
-//                fragment = new TableFragment();
-//                FragmentManager fragmentManager = getFragmentManager();
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.content_frame, fragment)
-//                        .commit();
-//            }
-//        });
+        LeagueGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Fragment fragment;
+                fragment = new TableFragment();
+                Bundle args = new Bundle();
+                if (position == 0){
+                    args.putString("league", "Premier League");
+                } else if (position == 1) {
+                    args.putString("league", "Serie A");
+                } else {
+                    args.putString("league", "Serie A");
+                }
+                fragment.setArguments(args);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame, fragment)
+                        .commit();
+
+            }
+        });
 
         return lv;
     }

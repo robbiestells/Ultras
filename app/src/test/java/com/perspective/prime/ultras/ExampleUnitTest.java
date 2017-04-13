@@ -1,4 +1,4 @@
-package com.perspective.prime.utras;
+package com.perspective.prime.ultras;
 
 import org.junit.Test;
 
