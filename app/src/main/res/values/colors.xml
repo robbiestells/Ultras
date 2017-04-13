@@ -3,4 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="champs">#00c853</color>
+    <color name="europa">#00b0ff</color>
+    <color name="relegation">#d50000</color>
 </resources>

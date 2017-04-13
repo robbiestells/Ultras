@@ -62,7 +62,15 @@ public class TableAdapter extends ArrayAdapter<TableClub> {
         String points = currentClub.getPoints();
         String logoId = "a" + currentClub.getTeamId();
 
-
+        if (Integer.parseInt(rank) <= 4){
+            listItemView.setBackgroundColor(getContext().getResources().getColor(R.color.champs));
+        } else if (Integer.parseInt(rank) == 5 || Integer.parseInt(rank) == 6){
+            listItemView.setBackgroundColor(getContext().getResources().getColor(R.color.europa));
+        } else if (Integer.parseInt(rank) >= 18) {
+            listItemView.setBackgroundColor(getContext().getResources().getColor(R.color.relegation));
+        } else {
+            listItemView.setBackgroundColor(getContext().getResources().getColor(R.color.cardview_light_background));
+        }
 
         TextView Rank = (TextView) listItemView.findViewById(R.id.position);
         Rank.setText(rank);
