@@ -58,7 +58,7 @@ public class FixtureAdapter extends ArrayAdapter<Fixture> {
             awayGoals = currentFixture.getAwayGoals();
         } else if (status.contains("TIMED")) {
             String date = currentFixture.getDate();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:MM");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date testDate = null;
             try {
                 testDate = sdf.parse(date);
