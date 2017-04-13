@@ -85,8 +85,8 @@ public class ScoresFragment extends Fragment {
 
         getData();
 
-      //  fixtures = getSavedFixtures(getContext(), currentDate);
-      //  filterData(currentDate);
+        //  fixtures = getSavedFixtures(getContext(), currentDate);
+        //  filterData(currentDate);
 
         PreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,29 +132,30 @@ public class ScoresFragment extends Fragment {
         fixtures.clear();
         fixtures = getSavedFixtures(getContext(), date);
 
-        for (Fixture fixture : fixtures) {
-            if (fixture.getDate().contains(date)) {
-                if (fixture.getCompetition().contains("426") || fixture.getCompetition().contains("438")
-                        || fixture.getCompetition().contains("436") || fixture.getCompetition().contains("431")
-                        || fixture.getCompetition().contains("440")) {
-                displayFixtures.add(fixture);
+        if (fixtures != null) {
+            for (Fixture fixture : fixtures) {
+                if (fixture.getDate().contains(date)) {
+                    if (fixture.getCompetition().contains("426") || fixture.getCompetition().contains("438")
+                            || fixture.getCompetition().contains("436") || fixture.getCompetition().contains("431")
+                            || fixture.getCompetition().contains("440")) {
+                        displayFixtures.add(fixture);
+                    }
                 }
             }
-        }
 
-        if (displayFixtures.size() !=0){
-            fixtureList.setVisibility(View.VISIBLE);
-            fixtureList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), displayFixtures));
-            String fixtures = displayFixtures.size()  + " fixtures";
-            if (displayFixtures.size() == 1){
-                fixtures = "1 fixture";
+            if (displayFixtures.size() != 0) {
+                fixtureList.setVisibility(View.VISIBLE);
+                fixtureList.setAdapter(new FixtureAdapter(getActivity().getApplicationContext(), displayFixtures));
+                String fixtures = displayFixtures.size() + " fixtures";
+                if (displayFixtures.size() == 1) {
+                    fixtures = "1 fixture";
+                }
+                fixtureNumbers.setText(fixtures);
+            } else {
+                fixtureList.setVisibility(View.INVISIBLE);
+                fixtureNumbers.setText("No fixtures found");
             }
-            fixtureNumbers.setText(fixtures);
-        } else {
-            fixtureList.setVisibility(View.INVISIBLE);
-            fixtureNumbers.setText("No fixtures found");
         }
-
     }
 
     private void getData() {
@@ -292,11 +293,11 @@ public class ScoresFragment extends Fragment {
                     int fixtureInt = fixtureSplit.length;
                     fixtureId = fixtureSplit[fixtureInt - 1];
 
-                    String[]  homeIdSplit = homeTeamId.split("/");
+                    String[] homeIdSplit = homeTeamId.split("/");
                     int homeInt = homeIdSplit.length;
                     homeTeamId = "a" + homeIdSplit[homeInt - 1];
 
-                    String[]  awayIdSplit = awayTeamId.split("/");
+                    String[] awayIdSplit = awayTeamId.split("/");
                     int awayInt = awayIdSplit.length;
                     awayTeamId = "a" + awayIdSplit[awayInt - 1];
 
@@ -395,7 +396,7 @@ public class ScoresFragment extends Fragment {
                 values.put(FixtureEntry.COLUMN_FIXTURE_HOME_ID, item.getHomeTeamId());
                 values.put(FixtureEntry.COLUMN_FIXTURE_AWAY_ID, item.getAwayTeamId());
 
-                int id = (int) db.update(FixtureEntry.TABLE_NAME, values, FixtureEntry.COLUMN_FIXTURE_ID + " =?", new String[] {item.getFixtureId()});
+                int id = (int) db.update(FixtureEntry.TABLE_NAME, values, FixtureEntry.COLUMN_FIXTURE_ID + " =?", new String[]{item.getFixtureId()});
                 if (id == 0) {
                     db.insert(FixtureEntry.TABLE_NAME, null, values);
 
@@ -409,48 +410,51 @@ public class ScoresFragment extends Fragment {
 
     public static ArrayList<Fixture> getSavedFixtures(Context context, String date) {
         UltraDbHelper mDbHelper = new UltraDbHelper(context);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        ArrayList<Fixture> fixtures = new ArrayList<>();
+        if (context != null) {
+            SQLiteDatabase db = mDbHelper.getReadableDatabase();
+            ArrayList<Fixture> fixtures = new ArrayList<>();
 
-        String query = "SELECT * FROM " + FixtureEntry.TABLE_NAME+ " WHERE " + FixtureEntry.COLUMN_FIXTURE_DATE +  " BETWEEN '" + date + " 00:00:00.000' AND '" + date + " 23:59:59.000'";
+            String query = "SELECT * FROM " + FixtureEntry.TABLE_NAME + " WHERE " + FixtureEntry.COLUMN_FIXTURE_DATE + " BETWEEN '" + date + " 00:00:00.000' AND '" + date + " 23:59:59.000'";
 
-        Cursor cursor = db.rawQuery(query, new String[]{});
-        //Cursor cursor = db.rawQuery(query, null);
+            Cursor cursor = db.rawQuery(query, new String[]{});
+            //Cursor cursor = db.rawQuery(query, null);
 
-        int idColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_ID);
-        int dateColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_DATE);
-        int statusColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_STATUS);
-        int homeTeamColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_HOME_TEAM);
-        int awayTeamColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM);
-        int homeGoalsColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS);
-        int awayGoalsColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS);
-        int competitionColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_COMPETITION);
-        int homeIdColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_HOME_ID);
-        int awayIdColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_AWAY_ID);
+            int idColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_ID);
+            int dateColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_DATE);
+            int statusColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_STATUS);
+            int homeTeamColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_HOME_TEAM);
+            int awayTeamColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_AWAY_TEAM);
+            int homeGoalsColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_BOME_GOALS);
+            int awayGoalsColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_AWAY_GOALS);
+            int competitionColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_COMPETITION);
+            int homeIdColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_HOME_ID);
+            int awayIdColumnIndex = cursor.getColumnIndex(FixtureEntry.COLUMN_FIXTURE_AWAY_ID);
 
 
-        cursor.moveToFirst();
-        if(cursor.moveToFirst()){
-            do{
-                Fixture item = new Fixture();
-                item.setFixtureId(cursor.getString(idColumnIndex));
-                item.setDate(cursor.getString(dateColumnIndex));
-                item.setStatus(cursor.getString(statusColumnIndex));
-                item.setHomeTeam(cursor.getString(homeTeamColumnIndex));
-                item.setAwayTeam(cursor.getString(awayTeamColumnIndex));
-                item.setHomeGoals(cursor.getString(homeGoalsColumnIndex));
-                item.setAwayGoals(cursor.getString(awayGoalsColumnIndex));
-                item.setCompetition(cursor.getString(competitionColumnIndex));
-                item.setHomeTeamId(cursor.getString(homeIdColumnIndex));
-                item.setAwayTeamId(cursor.getString(awayIdColumnIndex));
-                fixtures.add(item);
-                cursor.moveToNext();
+            cursor.moveToFirst();
+            if (cursor.moveToFirst()) {
+                do {
+                    Fixture item = new Fixture();
+                    item.setFixtureId(cursor.getString(idColumnIndex));
+                    item.setDate(cursor.getString(dateColumnIndex));
+                    item.setStatus(cursor.getString(statusColumnIndex));
+                    item.setHomeTeam(cursor.getString(homeTeamColumnIndex));
+                    item.setAwayTeam(cursor.getString(awayTeamColumnIndex));
+                    item.setHomeGoals(cursor.getString(homeGoalsColumnIndex));
+                    item.setAwayGoals(cursor.getString(awayGoalsColumnIndex));
+                    item.setCompetition(cursor.getString(competitionColumnIndex));
+                    item.setHomeTeamId(cursor.getString(homeIdColumnIndex));
+                    item.setAwayTeamId(cursor.getString(awayIdColumnIndex));
+                    fixtures.add(item);
+                    cursor.moveToNext();
 
-            }while(cursor.moveToNext());
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            return fixtures;
+        } else {
+            return null;
         }
-        cursor.close();
-        db.close();
-      return fixtures;
     }
-
 }
